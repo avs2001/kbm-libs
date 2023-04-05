@@ -8,5 +8,12 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:avs2001/kbm-libs.git"
+  },
+  "publishConfig": {
+    "@avs2001:registry": "https://npm.pkg.github.com"
+  }
 }
