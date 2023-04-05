@@ -9,6 +9,9 @@
     "tslib": "^2.3.0",
     "angular-oauth2-oidc": "^15.0.1"
   },
+  "devDependencies": {
+    "angular-oauth2-oidc": "^15.0.1"
+  },
   "sideEffects": false,
   "repository": {
     "type": "git",
