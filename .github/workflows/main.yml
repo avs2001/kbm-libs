@@ -1,0 +1,43 @@
+name: Angular Package
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - run: npm ci
+      - run: npm run build auth
+      - name: Upload distribution folder
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: dist
+          path: ./dist
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Download distribution folder
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: ./dist
+      - uses: actions/setup-node@v3
+        with:
+          registry-url: https://npm.pkg.github.com/
+      - run: ls -la ./dist/auth
+      - run: npm version patch
+        working-directory: ./dist/auth
+      - run: npm publish
+        working-directory: ./dist/auth
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
