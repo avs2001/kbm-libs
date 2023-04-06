@@ -35,7 +35,7 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com/
       - run: ls -la ./dist/auth
-#      - run: npm version patch
+      - run: npm version patch
         working-directory: ./dist/auth
       - run: npm publish
         working-directory: ./dist/auth
