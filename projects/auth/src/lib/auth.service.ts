@@ -1,6 +1,7 @@
 import {inject, Injectable} from "@angular/core";
 import {AUTH_CONFIG} from "./auth.config";
 import {OAuthService} from "angular-oauth2-oidc";
+import {error} from "ng-packagr/lib/utils/log";
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -12,12 +13,16 @@ export class AuthService {
     this._oAuth.setupAutomaticSilentRefresh();
   }
 
-  get accessToken() {
+  accessToken() {
     return this._oAuth.getAccessToken();
   }
 
   login() {
-    return this._oAuth.loadDiscoveryDocumentAndLogin();
+    return this._oAuth.loadDiscoveryDocumentAndLogin().then((isLogged) => {
+      console.log('isLogged', isLogged);
+      console.log('access_token', this.accessToken());
+      return isLogged;
+    }).catch(error => console.log('error', error))
   }
 
   logout() {

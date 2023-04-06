@@ -15,14 +15,16 @@ import {JsonPipe} from "@angular/common";
   ]
 })
 export class AppComponent implements OnInit {
-  token = this.authService.accessToken;
+
 
   constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    this.authService.events.subscribe(event => {
-      console.log(event);
+    this.authService.events.subscribe(({type}) => {
+      if (type == 'token_refresh_error') {
+        this.authService.logout();
+      }
     });
     this.authService.login();
   }
@@ -32,6 +34,6 @@ export class AppComponent implements OnInit {
   }
 
   printToken() {
-    console.log(this.token);
+    console.log(this.authService.accessToken());
   }
 }
