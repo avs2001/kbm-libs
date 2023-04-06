@@ -31,6 +31,12 @@ jobs:
         with:
           name: dist
           path: ./dist
+      - name: "Automated Version Bump"
+        uses: "phips28/gh-action-bump-version@master"
+        with:
+            tag-prefix: ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v3
         with:
           registry-url: https://npm.pkg.github.com/
