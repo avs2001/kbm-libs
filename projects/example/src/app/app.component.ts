@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from 'auth';
-import {AUTH_CONFIG} from "../../../auth/src/lib/auth.config";
-import {authConfig} from "./config";
 import {JsonPipe} from "@angular/common";
 
 
