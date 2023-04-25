@@ -1,17 +1,29 @@
 #!/bin/bash
 
-# Get the current version number
-CURRENT_VERSION=$(node -p "require('./package.json').version")
+# Get the current branch name
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# Split the version number into its component parts
-IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+# Loop through the projects in the workspace
+for DIR in $(ls -d projects/*); do
+  # Check if the project has a package.json file
+  if [ -f "$DIR/package.json" ]; then
+    # Check if the project has changes on the current branch
+    if git diff --name-only HEAD..origin/$CURRENT_BRANCH -- $DIR >/dev/null; then
+      # Get the current version number
+      CURRENT_VERSION=$(node -p "require('./$DIR/package.json').version")
 
-# Bump the patch version
-PATCH=$((VERSION_PARTS[2] + 1))
+      # Split the version number into its component parts
+      IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
 
-# Update the version number in the package.json file
-NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$PATCH"
-npm version $NEW_VERSION --no-git-tag-version
+      # Bump the patch version
+      PATCH=$((VERSION_PARTS[2] + 1))
 
-# Output the new version number
-echo $NEW_VERSION
+      # Update the version number in the package.json file
+      NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$PATCH"
+      npm --prefix ./$DIR version $NEW_VERSION --no-git-tag-version
+
+      # Output the new version number
+      echo "$DIR: $CURRENT_VERSION -> $NEW_VERSION"
+    fi
+  fi
+done
