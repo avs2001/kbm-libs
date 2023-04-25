@@ -26,6 +26,11 @@ jobs:
       packages: write
       contents: read
     steps:
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: packages/auth
       - name: Download distribution folder
         uses: actions/download-artifact@v3
         with:
@@ -34,7 +39,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           registry-url: https://npm.pkg.github.com/
-      - run: npm view @avs2001/auth version
       - run: ls -la ./dist/auth
       - run: npm version patch
         working-directory: ./dist/auth
