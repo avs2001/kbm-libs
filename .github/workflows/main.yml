@@ -39,14 +39,13 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com/
       - name: Publish auth library
+        if: 'contains(git diff --name-only ${{ github.sha }}~1..${{ github.sha }}, "dist/auth/")'
         run: npm publish ./dist/auth --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Publish auth library
-        run: npm publish ./dist/auth --access public
+      - name: Publish util library
+        if: 'contains(git diff --name-only ${{ github.sha }}~1..${{ github.sha }}, "dist/util/")'
+        run: npm publish ./dist/util --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Publish ui library
-        run: npm publish ./dist/ui --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
