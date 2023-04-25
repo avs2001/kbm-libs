@@ -1,13 +1,14 @@
 {
   "name": "kbm-libs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build:auth": "ng build auth",
     "build:util": "ng build util",
     "watch:auth": "ng build auth --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "version:bump": "bash ./scripts/version.sh"
   },
   "private": true,
   "dependencies": {
