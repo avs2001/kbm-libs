@@ -8,7 +8,7 @@ for DIR in $(ls -d projects/*); do
   # Check if the project has a package.json file
   if [ -f "$DIR/package.json" ]; then
     # Check if the project has changes on the current branch
-    if git diff --name-only HEAD~1 --relative | grep "^$DIR/" >/dev/null; then
+    if git diff --name-only HEAD..origin/$CURRENT_BRANCH -- $DIR >/dev/null; then
       # Get the current version number
       CURRENT_VERSION=$(node -p "require('./$DIR/package.json').version")
 
