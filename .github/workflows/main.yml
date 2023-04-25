@@ -37,7 +37,17 @@ jobs:
             echo "Code for auth library has changed."
           else
             echo "Code for auth library has not changed. Skipping publish."
-            exit 1
+            export SKIP_AUTH_PUBLISH=true
+          fi
+      - name: Check for changes in util library
+        if: ${{ !env.SKIP_AUTH_PUBLISH }}
+        run: |
+          changed_files="$(git diff --name-only HEAD^ HEAD)"
+          if echo "$changed_files" | grep -q "^projects/util/"; then
+            echo "Code for util library has changed."
+          else
+            echo "Code for util library has not changed. Skipping publish."
+            export SKIP_UTIL_PUBLISH=true
           fi
       - name: Download distribution folders
         uses: actions/download-artifact@v2
@@ -48,6 +58,12 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com/
       - name: Publish auth library
+        if: ${{ !env.SKIP_AUTH_PUBLISH }}
         run: npm publish ./dist/auth --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Publish util library
+        if: ${{ !env.SKIP_UTIL_PUBLISH }}
+        run: npm publish ./dist/util --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
