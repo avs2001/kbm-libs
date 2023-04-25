@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Check for changes in auth library
         run: |
-          changed_files="$(git diff --name-only HEAD^ HEAD)"
+          changed_files="$(git diff --name-only --diff-filter=AM HEAD)"
           if echo "$changed_files" | grep -q "^projects/auth/"; then
             echo "Code for auth library has changed."
           else
@@ -42,7 +42,7 @@ jobs:
       - name: Check for changes in util library
         if: ${{ !env.SKIP_AUTH_PUBLISH }}
         run: |
-          changed_files="$(git diff --name-only HEAD^ HEAD)"
+          changed_files="$(git diff --name-only --diff-filter=AM HEAD)"
           if echo "$changed_files" | grep -q "^projects/util/"; then
             echo "Code for util library has changed."
           else
