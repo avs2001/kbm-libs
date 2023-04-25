@@ -5,6 +5,9 @@
     "paths": {
       "auth": [
         "dist/auth"
+      ],
+      "util": [
+        "dist/util"
       ]
     },
     "baseUrl": "./",

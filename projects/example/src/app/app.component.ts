@@ -1,6 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {AuthService} from 'auth';
-import {JsonPipe} from "@angular/common";
+import {AsyncPipe, JsonPipe, NgIf} from "@angular/common";
+import {map} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 
 @Component({
@@ -9,26 +11,30 @@ import {JsonPipe} from "@angular/common";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   imports: [
-    JsonPipe
-  ]
+    JsonPipe,
+    NgIf,
+    AsyncPipe,
+  ],
 })
 export class AppComponent implements OnInit {
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
+  isLogged$ = this.authService.store.data$.pipe(map(state => state.isLogged));
 
-
-  constructor(private authService: AuthService) {
+  constructor() {
   }
 
-  ngOnInit(): void {
-    this.authService.events.subscribe(({type}) => {
-      if (type == 'token_refresh_error') {
-        this.authService.logout();
-      }
-    });
-    this.authService.login();
+
+  fetch() {
+    this.http.get('/api/tenant-admin/patients').subscribe(console.log);
   }
 
-  logout() {
-    this.authService.logout();
+  async ngOnInit(): Promise<void> {
+    await this.authService.login();
+  }
+
+  async logout() {
+    await this.authService.logout();
   }
 
   printToken() {

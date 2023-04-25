@@ -1,2 +1,5 @@
-<button (click)="logout()">Logout</button>
-<button (click)="printToken()">TOKEN</button>
+<ng-container *ngIf="isLogged$ | async">
+  <button (click)="logout()">Logout</button>
+  <button (click)="printToken()">TOKEN</button>
+  <button (click)="fetch()">Fetch</button>
+</ng-container>

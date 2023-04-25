@@ -1,14 +1,15 @@
 import {KbmAuthConfig} from "auth";
 
 export const authConfig: KbmAuthConfig = {
-  issuer: 'http://localhost:8081/realms/Main',
+  issuer: 'https://identity.kinetiqx.integration.kebormed.com/auth/realms/Main',
   redirectUri: `${window.location.origin}`,
   silentRefreshRedirectUri: `${window.location.origin}/assets/silent-refresh.html`,
-  clientId: 'fe',
+  clientId: 'frontend-client',
   requireHttps: false,
-  scope: 'openid',
+  scope: 'openid profile email offline_access',
   responseType: 'code',
+  disableAtHashCheck: true,
 }
 
 
-
+/**/

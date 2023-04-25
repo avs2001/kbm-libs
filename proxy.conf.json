@@ -1,0 +1,11 @@
+{
+  "/api": {
+    "target": "https://api.kinetiqx.integration.kebormed.com/api/",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "changeOrigin": true,
+    "logLevel": "info"
+  }
+}
