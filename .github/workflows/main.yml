@@ -23,7 +23,6 @@ jobs:
         with:
           node-version: 16
       - run: npm ci
-      - run: npm version patch
       - run: npm run build
       - name: Upload distribution folder
         uses: actions/upload-artifact@v3.1.0
