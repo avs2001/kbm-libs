@@ -27,3 +27,5 @@ for DIR in $(ls -d projects/*); do
     fi
   fi
 done
+
+
