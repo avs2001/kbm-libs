@@ -13,6 +13,7 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm run build:auth
+      - run: npm run build:util
       - name: Upload distribution folder
         uses: actions/upload-artifact@v3.1.0
         with:
@@ -39,8 +40,10 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com/
       - run: ls -la ./dist/auth
-      - run: npm version patch
+#      - run: npm version patch
         working-directory: ./dist/auth
+      - run: npm publish
+        working-directory: ./dist/util
       - run: npm publish
         working-directory: ./dist/auth
         env:
