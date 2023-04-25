@@ -6,6 +6,7 @@
     "start": "ng serve --proxy-config proxy.conf.json",
     "build:auth": "ng build auth",
     "build:util": "ng build util",
+    "build:ui": "ng build ui",
     "watch:auth": "ng build auth --watch --configuration development",
     "test": "ng test",
     "version:bump": "bash ./scripts/version.sh"
