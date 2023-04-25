@@ -4,6 +4,9 @@ import {AuthService} from "./auth.service";
 import {AuthStore, DefaultAuthStore} from "./auth.store";
 import {AuthState} from "./model";
 
+/**
+ * This is the configuration for the auth module.
+ */
 export type KbmAuthConfig = AuthConfig & {};
 export const AUTH_CONFIG = new InjectionToken<KbmAuthConfig>('authConfig', {
   providedIn: 'root',
