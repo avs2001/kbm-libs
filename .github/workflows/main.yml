@@ -42,7 +42,11 @@ jobs:
         run: npm publish ./dist/auth --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Publish util library
-        run: npm publish ./dist/util --access public
+      - name: Publish auth library
+        run: npm publish ./dist/auth --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Publish ui library
+        run: npm publish ./dist/ui --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

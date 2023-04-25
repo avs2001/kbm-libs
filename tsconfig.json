@@ -6,6 +6,9 @@
       "auth": [
         "dist/auth"
       ],
+      "ui": [
+        "dist/ui"
+      ],
       "util": [
         "dist/util"
       ]
