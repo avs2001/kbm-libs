@@ -1,6 +1,9 @@
 import {AuthState} from "./model";
 import {BehaviorSubject, Observable} from "rxjs";
 
+/**
+ * AuthStore is an abstract class that provides the base functionality for the AuthStore.
+ */
 export abstract class AuthStore<T> {
   abstract update(data: Partial<T>): void;
 
