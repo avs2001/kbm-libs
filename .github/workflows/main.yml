@@ -35,6 +35,15 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com/
       - run: ls -la ./dist/auth
+
+      - name: "Automated Version Bump"
+        uses: "phips28/gh-action-bump-version@master"
+        with:
+          tag-prefix: ''
+          env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "cat package.json"
+        run: cat ./package.json
       - run: npm version patch
         working-directory: ./dist/auth
       - run: npm publish
