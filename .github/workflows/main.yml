@@ -13,9 +13,18 @@ jobs:
         with:
           node-version: 16
       - run: npm ci
-      - run: npm run build:auth
-      - run: npm run build:util
+      - name: Check for changes in auth library
+        id: auth-check
+        run: |
+          cd packages/auth
+          if git diff-index --quiet HEAD --; then echo "::set-output name=changed::false"; else echo "::set-output name=changed::true"; fi
+      - name: Check for changes in util library
+        id: util-check
+        run: |
+          cd packages/util
+          if git diff-index --quiet HEAD --; then echo "::set-output name=changed::false"; else echo "::set-output name=changed::true"; fi
       - name: Upload distribution folders
+        if: steps.auth-check.outputs.changed == 'true' || steps.util-check.outputs.changed == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: dist
@@ -39,14 +48,12 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com/
       - name: Publish auth library
+        if: steps.auth-check.outputs.changed == 'true'
         run: npm publish ./dist/auth --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Publish auth library
-        run: npm publish ./dist/auth --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Publish ui library
-        run: npm publish ./dist/ui --access public
+      - name: Publish util library
+        if: steps.util-check.outputs.changed == 'true'
+        run: npm publish ./dist/util --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
