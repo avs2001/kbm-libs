@@ -2,7 +2,7 @@ name: Angular Package
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
@@ -30,25 +30,6 @@ jobs:
       packages: write
       contents: read
     steps:
-      - name: Check for changes in auth library
-        run: |
-          changed_files="$(git diff --name-only --diff-filter=AM --no-index /dev/null HEAD)"
-          if echo "$changed_files" | grep -q "^projects/auth/"; then
-            echo "Code for auth library has changed."
-          else
-            echo "Code for auth library has not changed. Skipping publish."
-            export SKIP_AUTH_PUBLISH=true
-          fi
-      - name: Check for changes in util library
-        if: ${{ !env.SKIP_AUTH_PUBLISH }}
-        run: |
-          changed_files="$(git diff --name-only --diff-filter=AM --no-index /dev/null HEAD)"
-          if echo "$changed_files" | grep -q "^projects/util/"; then
-            echo "Code for util library has changed."
-          else
-            echo "Code for util library has not changed. Skipping publish."
-            export SKIP_UTIL_PUBLISH=true
-          fi
       - name: Download distribution folders
         uses: actions/download-artifact@v2
         with:
@@ -58,12 +39,14 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com/
       - name: Publish auth library
-        if: ${{ !env.SKIP_AUTH_PUBLISH }}
         run: npm publish ./dist/auth --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Publish util library
-        if: ${{ !env.SKIP_UTIL_PUBLISH }}
-        run: npm publish ./dist/util --access public
+      - name: Publish auth library
+        run: npm publish ./dist/auth --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Publish ui library
+        run: npm publish ./dist/ui --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
