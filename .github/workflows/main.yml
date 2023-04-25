@@ -3,22 +3,26 @@ name: Angular Package
 on:
   push:
     branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: 16
       - run: npm ci
       - run: npm run build:auth
       - run: npm run build:util
-      - name: Upload distribution folder
-        uses: actions/upload-artifact@v3.1.0
+      - name: Upload distribution folders
+        uses: actions/upload-artifact@v2
         with:
           name: dist
-          path: ./dist
+          path: |
+            ./dist/auth
+            ./dist/util
+
   publish:
     needs: build
     runs-on: ubuntu-latest
@@ -26,25 +30,19 @@ jobs:
       packages: write
       contents: read
     steps:
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
-        with:
-          path: packages/auth
-      - name: Download distribution folder
-        uses: actions/download-artifact@v3
+      - name: Download distribution folders
+        uses: actions/download-artifact@v2
         with:
           name: dist
           path: ./dist
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v2
         with:
           registry-url: https://npm.pkg.github.com/
-      - run: ls -la ./dist/auth
-#      - run: npm version patch
-        working-directory: ./dist/auth
-      - run: npm publish
-        working-directory: ./dist/util
-      - run: npm publish
-        working-directory: ./dist/auth
+      - name: Publish auth library
+        run: npm publish ./dist/auth --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Publish util library
+        run: npm publish ./dist/util --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
