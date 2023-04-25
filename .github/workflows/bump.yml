@@ -21,27 +21,53 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Bump version
-        id: bump_version
-        run: echo "::set-output name=version::$(npm run version:bump --silent)"
-
-      - name: Check if version changed
-        id: version_changed
+      - name: Bump version if necessary
         run: |
-          git diff --exit-code --quiet -- package.json
-          echo ::set-output name=changed::$?
+          # Get the current branch name
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-      - name: Commit version bump
-        if: steps.version_changed.outputs.changed == '0'
-        run: |
-          VERSION=${{ steps.bump_version.outputs.version }}
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git commit -a -m "chore: bump version to $VERSION"
-          echo "Committed version bump to Git"
+          # Loop through the projects in the workspace
+          for DIR in $(ls -d projects/*); do
+            # Check if the project has a package.json file
+            if [ -f "$DIR/package.json" ]; then
+              # Check if the project has changes on the current branch
+              if git diff --name-only HEAD~1 --relative | grep "^$DIR/" >/dev/null; then
+                # Get the current version number
+                CURRENT_VERSION=$(node -p "require('./$DIR/package.json').version")
+
+                # Split the version number into its component parts
+                IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+
+                # Bump the patch version
+                PATCH=$((VERSION_PARTS[2] + 1))
+
+                # Update the version number in the package.json file
+                NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$PATCH"
+                npm --prefix ./$DIR version $NEW_VERSION --no-git-tag-version
+
+                # Output the new version number
+                echo "$DIR: $CURRENT_VERSION -> $NEW_VERSION"
+
+                # Set the VERSION variable to the new version number
+                VERSION=$NEW_VERSION
+
+                # Stage the changes to the package.json file
+                git add $DIR/package.json
+              fi
+            fi
+          done
+
+          # Commit the changes if the version was bumped
+          if [ ! -z "$VERSION" ]; then
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git commit -m "chore: bump version to $VERSION"
+            echo "Committed version bump to Git"
+          else
+            echo "No version bump necessary"
+          fi
 
       - name: Push changes
-        if: steps.version_changed.outputs.changed == '0'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
