@@ -16,12 +16,12 @@ jobs:
       - name: Check for changes in auth library
         id: auth-check
         run: |
-          cd packages/auth
+          cd projects/auth
           if git diff-index --quiet HEAD --; then echo "::set-output name=changed::false"; else echo "::set-output name=changed::true"; fi
       - name: Check for changes in util library
         id: util-check
         run: |
-          cd packages/util
+          cd projects/util
           if git diff-index --quiet HEAD --; then echo "::set-output name=changed::false"; else echo "::set-output name=changed::true"; fi
       - name: Upload distribution folders
         if: steps.auth-check.outputs.changed == 'true' || steps.util-check.outputs.changed == 'true'
