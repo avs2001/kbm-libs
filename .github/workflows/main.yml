@@ -30,6 +30,6 @@ jobs:
           cd ./dist
           for dir in */ ; do
             cd $dir
-            npm publish --access public --registry=https://npm.pkg.github.com/
+            npm publish --access public --registry=https://npm.pkg.github.com/ --scope=@avs2001
             cd ..
           done
