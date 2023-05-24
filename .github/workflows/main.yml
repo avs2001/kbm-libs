@@ -13,9 +13,7 @@ jobs:
         with:
           node-version: 16
       - run: npm ci
-      - run: npm run build:util
       - run: npm run build:auth
-      - run: npm run build:ui
       - name: Upload distribution folders
         uses: actions/upload-artifact@v2
         with:
