@@ -31,6 +31,6 @@ jobs:
           for dir in */ ; do
             cd $dir
             PACKAGE_NAME=$(node -p "require('./package.json').name")
-            npm publish --access public --registry=https://npm.pkg.github.com/ --scope=@avs2001
+            npm publish --access public --registry=https://npm.pkg.github.com/
             cd ..
           done
