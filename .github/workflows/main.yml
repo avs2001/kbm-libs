@@ -39,6 +39,7 @@ jobs:
       - name: Publish Libraries to GitHub Packages
         run: |
           cd ./dist
+          echo "@avs2001:registry=https://npm.pkg.github.com" > .npmrc
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
