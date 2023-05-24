@@ -13,17 +13,13 @@ jobs:
         with:
           node-version: 16
       - run: npm ci
-      - run: npm run build:util
       - run: npm run build:auth
-      - run: npm run build:ui
       - name: Upload distribution folders
         uses: actions/upload-artifact@v2
         with:
           name: dist
           path: |
             ./dist/auth
-            ./dist/util
-            ./dist/ui
 
   publish:
     needs: build
@@ -44,15 +40,4 @@ jobs:
         if: 'contains(git diff --name-only ${{ github.sha }}~1..${{ github.sha }}, "dist/auth/")'
         run: npm publish ./dist/auth --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Publish util library
-        if: 'contains(git diff --name-only ${{ github.sha }}~1..${{ github.sha }}, "dist/util/")'
-        run: npm publish ./dist/util --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Publish ui library
-        if: 'contains(git diff --name-only ${{ github.sha }}~1..${{ github.sha }}, "dist/ui/")'
-        run: npm publish ./dist/ui --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}
