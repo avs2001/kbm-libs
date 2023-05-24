@@ -1,45 +1,35 @@
-name: Angular Package
+name: Build and Publish Angular Libraries
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # Replace with your desired branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 16
-      - run: npm ci
-      - run: npm run build:auth
-      - name: Upload distribution folders
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: |
-            ./dist/auth
 
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
     steps:
-      - name: Download distribution folders
-        uses: actions/download-artifact@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          name: dist
-          path: ./dist
-      - uses: actions/setup-node@v2
-        with:
-          registry-url: https://npm.pkg.github.com/
+          node-version: 14
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Libraries
+        run: npm run build:auth
+
       - name: Publish Libraries to GitHub Packages
         run: |
-          cd ./dist
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
-          npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+          cd ./dist/auth
+          for dir in */ ; do
+            cd $dir
+            npm publish --access public --registry=https://npm.pkg.github.com/
+            cd ..
+          done
