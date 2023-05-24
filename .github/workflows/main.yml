@@ -39,6 +39,6 @@ jobs:
       - name: Publish Libraries to GitHub Packages
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-          cd ./dist/auth
-          ls ./dist
+          cd ./dist
+          ls
           npm publish --access public --registry=https://npm.pkg.github.com/
