@@ -1,30 +1,46 @@
-name: Build and Publish Angular Library
+name: Angular Package
 
 on:
   push:
-    branches:
-      - main  # Replace with your desired branch
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
+      - run: npm ci
+      - run: npm run build:util
+      - run: npm run build:auth
+      - run: npm run build:ui
+      - name: Upload distribution folders
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: |
+            ./dist/auth
 
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Build Library
-        run: npm run build:auth
-
-      - name: Publish to GitHub Packages
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Download distribution folders
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: ./dist
+      - uses: actions/setup-node@v2
+        with:
+          registry-url: https://npm.pkg.github.com/
+      - name: Publish auth library
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
           npm publish --access public --registry=https://npm.pkg.github.com/
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
