@@ -39,6 +39,6 @@ jobs:
       - name: Publish auth library
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-          npm publish --access public --registry=https://npm.pkg.github.com/
+          npm publish ./dist/auth --access public --registry=https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
