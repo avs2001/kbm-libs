@@ -30,7 +30,7 @@ jobs:
           cd ./dist
           for dir in */ ; do
             cd $dir
-            npm version patch
-            npm publish --access public --registry=https://npm.pkg.github.com/ --scope=@avs2001/auth
+            PACKAGE_NAME=$(node -p "require('./package.json').name")
+            npm publish --access public --registry=https://npm.pkg.github.com/OWNER/$PACKAGE_NAME
             cd ..
           done
