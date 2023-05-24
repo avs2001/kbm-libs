@@ -32,12 +32,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist
-          path: ./dist
+          path: ./dist/auth
       - uses: actions/setup-node@v2
         with:
           registry-url: https://npm.pkg.github.com/
       - name: Publish auth library
-        if: 'contains(git diff --name-only ${{ github.sha }}~1..${{ github.sha }}, "dist/auth/")'
-        run: npm publish ./../dist/auth --access public
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
