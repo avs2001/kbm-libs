@@ -40,4 +40,4 @@ jobs:
         if: 'contains(git diff --name-only ${{ github.sha }}~1..${{ github.sha }}, "dist/auth/")'
         run: npm publish ./dist/auth --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
