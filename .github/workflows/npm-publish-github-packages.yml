@@ -6,6 +6,10 @@ name: Export Packages
 on:
   release:
     types: [created]
+    
+concurrency:
+  group: ci-runs-${{ github.ref }}-1
+  cancel-in-progress: true
 
 jobs:
   build:
