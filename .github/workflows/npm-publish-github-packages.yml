@@ -11,27 +11,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: npm ci
-      - run: npm run build:auth
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
           node-version: 16
-          registry-url: https://npm.pkg.github.com/
-      - run: |
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Libraries
+        run: npm run build:auth
+
+      - name: Publish Libraries to GitHub Packages
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
           cd ./dist
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          for dir in */ ; do
+            cd $dir
+            PACKAGE_NAME=$(node -p "require('./package.json').name")
+            npm publish --access public --registry=https://npm.pkg.github.com/
+            cd ..
+          done
